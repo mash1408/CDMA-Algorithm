@@ -1,7 +1,8 @@
  
-import java.util.Scanner;  // Import the Scanner class
+import java.util.Scanner;
 import java.util.*;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 public class cdma {
  static int num;
@@ -43,16 +44,17 @@ public class cdma {
     else
         return true;
    }
-   public static<T> List<T> clone(List<T> original) {
-        List<T> copy = new ArrayList<>();
-        copy.addAll(original);
-        return copy;
-}
+//    public static List<List<Integer>> clone(List<List<Integer>> original) {
+//         List<List<Integer>> copy = new ArrayList<List<Integer>>();
+//         copy.addAll(original);
+//         return copy;
+// }
     public static void main(String[] args) {
         System.out.println("Enter no. of users");
         Scanner myObj = new Scanner(System.in);
         num = myObj.nextInt();
             List<List<Integer>> keys = new ArrayList<List<Integer>>();
+            List<List<Integer>> encodedKeys=new ArrayList<List<Integer>>();
             Map data = new HashMap(); 
 
             for(int i=0;i<num;i++){
@@ -63,6 +65,7 @@ public class cdma {
                 data.put(String.valueOf(i+1),newObj.nextInt());
                 cdma m= new cdma();
                 keys.add(m.bipolar(key));
+                encodedKeys.add(m.bipolar(key));
             }
         System.out.println("Keys: "+keys);// bipolar representation
         System.out.println("Data: "+data.values());
@@ -71,7 +74,9 @@ public class cdma {
         // while(!m.orthogonal(keys)){
 
         // }
-        List<List<Integer>> encodedKeys=clone(keys);
+        
+        
+        
         List<Integer> dataList = new ArrayList<>(data.values());
         for(int i=0;i<keys.size();i++){
             encodedKeys.get(i).replaceAll(new MyOperator(dataList.get(i)));
@@ -88,6 +93,18 @@ public class cdma {
             transmissionMessage.add(sum);
     }
        System.out.println("Message: "+transmissionMessage);
+        
+       //Receiver Side
+       System.out.println("*******************************Receiver************************************");
+       List<Integer> received =new ArrayList<Integer>();
+       for(List<Integer> j : keys){
+           int sum=0;
+       for(int i=0;i<keys.get(0).size();i++)
+            sum=sum+transmissionMessage.get(i)*j.get(i);
+            
+       received.add(sum);
+       }
+       System.out.println("Data Received: "+received);
 }
 }
 class MyOperator implements UnaryOperator<Integer> 
